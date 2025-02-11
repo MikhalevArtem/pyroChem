@@ -59,11 +59,24 @@
       app
       color="surface-light"
     ></v-footer>
+    <v-snackbar v-model="showSnack">
+      {{ errors[0] }}
+
+      <template v-slot:actions>
+        <v-btn
+          color="pink"
+          variant="text"
+          @click="removeError"
+        >
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script setup>
-  import { reactive, ref } from 'vue';
+  import { computed, reactive, ref } from 'vue';
   import {
     getWB,
     getSheetNames,
@@ -73,13 +86,43 @@
     getCoefficient3_T,
     findDPoint,
     getLengths,
+    calcSD,
+    calcST,
   } from './functions';
 
   const inputFile = ref(null);
   const inputCoordinates = reactive({ x: 0, y: 0 });
+  const errors = reactive([]);
+
+  const showSnack = computed({
+    get() {
+      return Boolean(errors.length);
+    },
+    set() {
+      errors.shift();
+    },
+  });
+
+  const removeError = () => {
+    errors.shift();
+  };
+
+  const fullproof = (lengths) => {
+    const conditionOne = Boolean(lengths.lD_T + lengths.l3_T > lengths.l3_D);
+    const conditionTwo = Boolean(lengths.l1_D + lengths.l2_D > lengths.l1_2);
+    if (conditionOne || conditionTwo) {
+      errors.push('Заданный цвет находится вне доступного диапазона');
+      inputCoordinates.x = 0;
+      inputCoordinates.y = 0;
+    }
+  };
 
   const sumbitFormHandler = async () => {
+    errors.length = 0;
     if (Number(inputCoordinates.x) < 0 || Number(inputCoordinates.y) < 0) {
+      errors.push('Значения координат не могут быть отрицательными');
+      inputCoordinates.x = 0;
+      inputCoordinates.y = 0;
       return;
     }
     console.log(inputCoordinates);
@@ -102,6 +145,16 @@
     console.log(dPoint);
     const lengths = getLengths(verticles, +inputCoordinates.x, +inputCoordinates.y, dPoint);
     console.log(lengths);
+
+    // Проверка на соответсвие диапазона
+    fullproof(lengths);
+
+    //Вычисление Сд и Ст
+    const sD = calcSD(lengths);
+    const sT = calcST(lengths);
+    console.log(sD, sT);
+
+    //Находим из каждой таблицы 3 ближайшие точки к заданным координатам
   };
 </script>
 

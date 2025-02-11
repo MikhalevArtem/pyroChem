@@ -26,28 +26,36 @@ const findDPoint = (coefficient1_2, coefficient3_T) => {
 const getLengths = (verticles, x, y, dPoint) => {
   const result = {
     l1_2: 0,
-    l1_d: 0,
-    l3_d: 0,
-    ld_t: 0,
-    l2_d: 0,
-    l3_t: 0,
+    l1_D: 0,
+    l3_D: 0,
+    lD_T: 0,
+    l2_D: 0,
+    l3_T: 0,
   };
 
   result.l1_2 = Math.sqrt(
     Math.pow(verticles.green[0] - verticles.blue[0], 2) + Math.pow(verticles.green[1] - verticles.blue[1], 2),
   );
 
-  result.l1_d = Math.sqrt(Math.pow(verticles.green[0] - dPoint.xd, 2) + Math.pow(verticles.green[1] - dPoint.yd, 2));
+  result.l1_D = Math.sqrt(Math.pow(verticles.green[0] - dPoint.xd, 2) + Math.pow(verticles.green[1] - dPoint.yd, 2));
 
-  result.l3_d = Math.sqrt(Math.pow(verticles.red[0] - dPoint.xd, 2) + Math.pow(verticles.red[1] - dPoint.yd, 2));
+  result.l3_D = Math.sqrt(Math.pow(verticles.red[0] - dPoint.xd, 2) + Math.pow(verticles.red[1] - dPoint.yd, 2));
 
-  result.ld_t = Math.sqrt(Math.pow(+x - dPoint.xd, 2) + Math.pow(+y - dPoint.yd, 2));
+  result.lD_T = Math.sqrt(Math.pow(+x - dPoint.xd, 2) + Math.pow(+y - dPoint.yd, 2));
 
-  result.l2_d = Math.sqrt(Math.pow(verticles.blue[0] - dPoint.xd, 2) + Math.pow(verticles.blue[1] - dPoint.yd, 2));
+  result.l2_D = Math.sqrt(Math.pow(verticles.blue[0] - dPoint.xd, 2) + Math.pow(verticles.blue[1] - dPoint.yd, 2));
 
-  result.l3_t = Math.sqrt(Math.pow(+x - verticles.red[0], 2) + Math.pow(+y - verticles.red[1], 2));
+  result.l3_T = Math.sqrt(Math.pow(+x - verticles.red[0], 2) + Math.pow(+y - verticles.red[1], 2));
 
   return result;
 };
 
-export { getCoefficient1_2, getCoefficient3_T, findDPoint, getLengths };
+const calcSD = (lengths) => {
+  return lengths.l1_D / lengths.l1_2;
+};
+
+const calcST = (lengths) => {
+  return lengths.lD_T / lengths.l3_D;
+};
+
+export { getCoefficient1_2, getCoefficient3_T, findDPoint, getLengths, calcSD, calcST };
