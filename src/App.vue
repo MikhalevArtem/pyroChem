@@ -88,6 +88,7 @@
     getLengths,
     calcSD,
     calcST,
+    calcNearest,
   } from './functions';
 
   const inputFile = ref(null);
@@ -125,16 +126,13 @@
       inputCoordinates.y = 0;
       return;
     }
-    console.log(inputCoordinates);
     // Парсим страницы xlsx файла
     const wb = await getWB(inputFile.value);
     const sheetNames = getSheetNames(wb);
     const coordinatesObj = getCoordinatesObj(wb, sheetNames);
-    console.log(coordinatesObj);
 
     // Находим координаты вершин треугольника
     const verticles = findVerticles(coordinatesObj);
-    console.log(verticles);
 
     // Находим коэффициенты
     const coefficient1_2 = getCoefficient1_2(verticles);
@@ -142,9 +140,7 @@
 
     // Находим растояния
     const dPoint = findDPoint(coefficient1_2, coefficient3_T);
-    console.log(dPoint);
     const lengths = getLengths(verticles, +inputCoordinates.x, +inputCoordinates.y, dPoint);
-    console.log(lengths);
 
     // Проверка на соответсвие диапазона
     fullproof(lengths);
@@ -152,9 +148,10 @@
     //Вычисление Сд и Ст
     const sD = calcSD(lengths);
     const sT = calcST(lengths);
-    console.log(sD, sT);
 
     //Находим из каждой таблицы 3 ближайшие точки к заданным координатам
+    const nearest = calcNearest(coordinatesObj, +inputCoordinates.x, +inputCoordinates.y);
+    console.log(nearest);
   };
 </script>
 

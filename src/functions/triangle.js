@@ -6,7 +6,6 @@ const getCoordinatesArr = (coordinateObj) => {
     Object.values(coordinateObj[key]).forEach((item) => {
       result.push(item);
     });
-    console.log(result);
     return result;
   }, []);
 };
