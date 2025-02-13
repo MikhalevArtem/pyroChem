@@ -88,7 +88,9 @@
     getLengths,
     calcSD,
     calcST,
-    calcNearest,
+    calcNearestPoints,
+    calcNearestSheetPoints,
+    calcPercentOne,
   } from './functions';
 
   const inputFile = ref(null);
@@ -118,6 +120,10 @@
     }
   };
 
+  const calcnearestSheetName = (nearestSheetPoints) => {
+    return Object.keys(nearestSheetPoints)[0];
+  };
+
   const sumbitFormHandler = async () => {
     errors.length = 0;
     if (Number(inputCoordinates.x) < 0 || Number(inputCoordinates.y) < 0) {
@@ -130,6 +136,7 @@
     const wb = await getWB(inputFile.value);
     const sheetNames = getSheetNames(wb);
     const coordinatesObj = getCoordinatesObj(wb, sheetNames);
+    console.log('coordinatesObj', coordinatesObj);
 
     // Находим координаты вершин треугольника
     const verticles = findVerticles(coordinatesObj);
@@ -143,15 +150,28 @@
     const lengths = getLengths(verticles, +inputCoordinates.x, +inputCoordinates.y, dPoint);
 
     // Проверка на соответсвие диапазона
-    fullproof(lengths);
+    // fullproof(lengths);
 
     //Вычисление Сд и Ст
     const sD = calcSD(lengths);
     const sT = calcST(lengths);
+    console.log('sD', sD);
+    console.log('sT', sT);
 
     //Находим из каждой таблицы 3 ближайшие точки к заданным координатам
-    const nearest = calcNearest(coordinatesObj, +inputCoordinates.x, +inputCoordinates.y);
-    console.log(nearest);
+    const nearestPoints = calcNearestPoints(coordinatesObj, +inputCoordinates.x, +inputCoordinates.y);
+    console.log('nearestPoints', nearestPoints);
+
+    //Вычислеям таблицу и координаты, данные которорых ближе всего к заданной точке
+    const nearestSheetPoints = calcNearestSheetPoints(nearestPoints, inputCoordinates.x, inputCoordinates.y);
+    console.log('nearestSheetPoints', nearestSheetPoints);
+
+    const nearestSheetName = calcnearestSheetName(nearestSheetPoints);
+    console.log('nearestSheetName', nearestSheetName);
+
+    // const percentOne = calcPercentOne(nearestSheetPoints, sD);
+    const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD);
+    console.log('percentOne', percentOne);
   };
 </script>
 

@@ -5,6 +5,13 @@ const CONSTANTS = {
   START_ROW: 5,
   X_COLL: 'E',
   Y_COLL: 'F',
+  SD_COL: 'J',
+  PERCENT_ONE_COL: 'A',
+  PERCENT_TWO_COL: 'B',
+  PERCENT_THREE_COL: 'C',
+  COMPOSITION_ONE_NAME: 'A3',
+  COMPOSITION_TWO_NAME: 'B3',
+  COMPOSITION_THREE_NAME: 'C3',
 };
 
 const getWB = async (file) => {
@@ -39,6 +46,9 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
     const sheet = getSheetByName(wb, sheetName);
     const sheetRowsCount = getSheetRowsCount(sheet);
     const name = getSheetCell(sheet, CONSTANTS.NAME_CELL).v;
+    const compositionOneName = getSheetCell(sheet, CONSTANTS.COMPOSITION_ONE_NAME).v;
+    const compositionTwoName = getSheetCell(sheet, CONSTANTS.COMPOSITION_TWO_NAME).v;
+    const compositionThreeName = getSheetCell(sheet, CONSTANTS.COMPOSITION_THREE_NAME).v;
     const result = {
       ...accum,
       [name]: {},
@@ -47,8 +57,19 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
       result[name][i] = [
         +getSheetCell(sheet, `${CONSTANTS.X_COLL}${i}`).w,
         +getSheetCell(sheet, `${CONSTANTS.Y_COLL}${i}`).w,
+        +getSheetCell(sheet, `${CONSTANTS.SD_COL}${i}`).w,
+        {
+          [compositionOneName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_ONE_COL}${i}`).w),
+        },
+        {
+          [compositionTwoName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_TWO_COL}${i}`).w),
+        },
+        {
+          [compositionThreeName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_THREE_COL}${i}`)?.w),
+        },
       ];
     }
+    console.log('parse', result);
     return result;
   }, {});
 };
