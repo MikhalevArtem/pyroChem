@@ -31,7 +31,7 @@ const getSheetByName = (wb, sheetName) => {
 };
 
 const getSheetCell = (sheet, cellName) => {
-  return sheet[cellName];
+  return sheet[cellName] || null;
 };
 
 const getSheetRowsCount = (sheet) => {
@@ -46,9 +46,9 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
     const sheet = getSheetByName(wb, sheetName);
     const sheetRowsCount = getSheetRowsCount(sheet);
     const name = getSheetCell(sheet, CONSTANTS.NAME_CELL).v;
-    const compositionOneName = getSheetCell(sheet, CONSTANTS.COMPOSITION_ONE_NAME).v;
-    const compositionTwoName = getSheetCell(sheet, CONSTANTS.COMPOSITION_TWO_NAME).v;
-    const compositionThreeName = getSheetCell(sheet, CONSTANTS.COMPOSITION_THREE_NAME).v;
+    const compositionOneName = getSheetCell(sheet, CONSTANTS.COMPOSITION_ONE_NAME)?.v;
+    const compositionTwoName = getSheetCell(sheet, CONSTANTS.COMPOSITION_TWO_NAME)?.v;
+    const compositionThreeName = getSheetCell(sheet, CONSTANTS.COMPOSITION_THREE_NAME)?.v;
     const result = {
       ...accum,
       [name]: {},
@@ -58,16 +58,22 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
         +getSheetCell(sheet, `${CONSTANTS.X_COLL}${i}`).w,
         +getSheetCell(sheet, `${CONSTANTS.Y_COLL}${i}`).w,
         +getSheetCell(sheet, `${CONSTANTS.SD_COL}${i}`).w,
-        {
-          [compositionOneName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_ONE_COL}${i}`).w),
-        },
-        {
-          [compositionTwoName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_TWO_COL}${i}`).w),
-        },
-        {
-          [compositionThreeName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_THREE_COL}${i}`)?.w),
-        },
       ];
+      if (compositionOneName) {
+        result[name][i].push({
+          [compositionOneName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_ONE_COL}${i}`).w),
+        });
+      }
+      if (compositionTwoName) {
+        result[name][i].push({
+          [compositionTwoName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_TWO_COL}${i}`).w),
+        });
+      }
+      if (compositionThreeName) {
+        result[name][i].push({
+          [compositionThreeName]: parseInt(getSheetCell(sheet, `${CONSTANTS.PERCENT_THREE_COL}${i}`)?.w),
+        });
+      }
     }
     console.log('parse', result);
     return result;
