@@ -4,6 +4,7 @@
 
 // Функция для вычисления коэффициентов кубического сплайна
 function calculateCubicSplineCoefficients(points) {
+  console.log('сплайны', points);
   const n = points.length - 1;
   const h = [];
   const alpha = [];
@@ -14,22 +15,22 @@ function calculateCubicSplineCoefficients(points) {
   const b = [];
   const d = [];
 
-  // Шаг 1: Вычисление h[i]
+  // Вычисление h[i]
   for (let i = 0; i < n; i++) {
     h[i] = points[i + 1].x - points[i].x;
   }
 
-  // Шаг 2: Вычисление alpha[i]
+  // Вычисление alpha[i]
   for (let i = 1; i < n; i++) {
     alpha[i] = (3 / h[i]) * (points[i + 1].y - points[i].y) - (3 / h[i - 1]) * (points[i].y - points[i - 1].y);
   }
 
-  // Шаг 3: Инициализация массивов l, mu, z
+  // Инициализация массивов l, mu, z
   l[0] = 1;
   mu[0] = 0;
   z[0] = 0;
 
-  // Шаг 4: Решение системы уравнений для c[i]
+  // Решение системы уравнений для c[i]
   for (let i = 1; i < n; i++) {
     l[i] = 2 * (points[i + 1].x - points[i - 1].x) - h[i - 1] * mu[i - 1];
     mu[i] = h[i] / l[i];
@@ -40,7 +41,7 @@ function calculateCubicSplineCoefficients(points) {
   z[n] = 0;
   c[n] = 0;
 
-  // Шаг 5: Обратная подстановка для нахождения c[i]
+  // Обратная подстановка для нахождения c[i]
   for (let j = n - 1; j >= 0; j--) {
     c[j] = z[j] - mu[j] * c[j + 1];
     b[j] = (points[j + 1].y - points[j].y) / h[j] - (h[j] * (c[j + 1] + 2 * c[j])) / 3;
@@ -48,6 +49,7 @@ function calculateCubicSplineCoefficients(points) {
   }
 
   // Возвращаем коэффициенты
+  console.log('коэффициенты', { b, c, d });
   return { b, c, d };
 }
 
@@ -101,7 +103,7 @@ const calcPercentOne = (points, sD) => {
 
   const coef = calculateCubicSplineCoefficients(intPoints);
 
-  return findXForY(intPoints, coef, sD).toFixed(2);
+  return findXForY(intPoints, coef, sD);
 };
 
 export { calcPercentOne };

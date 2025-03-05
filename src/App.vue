@@ -11,7 +11,7 @@
             <v-row justify="center">
               <v-col
                 cols="12"
-                md="4"
+                lg="6"
               >
                 <v-file-input
                   clearable
@@ -22,7 +22,7 @@
                   <v-row justify="center">
                     <v-col
                       cols="12"
-                      md="6"
+                      sm="6"
                     >
                       <v-text-field
                         v-model="inputCoordinates.x"
@@ -32,7 +32,7 @@
                     </v-col>
                     <v-col
                       cols="12"
-                      md="6"
+                      sm="6"
                     >
                       <v-text-field
                         v-model="inputCoordinates.y"
@@ -77,6 +77,7 @@
 
 <script setup>
   import { computed, reactive, ref } from 'vue';
+  import Decimal from 'decimal.js';
   import {
     getWB,
     getSheetNames,
@@ -91,6 +92,7 @@
     calcNearestPoints,
     calcNearestSheetPoints,
     calcPercentOne,
+    CONSTANTS,
   } from './functions';
 
   const inputFile = ref(null);
@@ -153,10 +155,10 @@
     // fullproof(lengths);
 
     //Вычисление Сд и Ст
-    const sD = calcSD(lengths);
-    const sT = calcST(lengths);
-    console.log('sD', sD);
-    console.log('sT', sT);
+    // const sD = calcSD(lengths);
+    // const sT = calcST(lengths);
+    // console.log('sD', sD);
+    // console.log('sT', sT);
 
     //Находим из каждой таблицы 3 ближайшие точки к заданным координатам
     const nearestPoints = calcNearestPoints(coordinatesObj, +inputCoordinates.x, +inputCoordinates.y);
@@ -169,9 +171,35 @@
     const nearestSheetName = calcnearestSheetName(nearestSheetPoints);
     console.log('nearestSheetName', nearestSheetName);
 
+    const dX = Decimal.abs(
+      new Decimal(coordinatesObj[nearestSheetName][CONSTANTS.START_ROW][0]).minus(new Decimal(inputCoordinates.x)),
+    );
+    const dY = Decimal.abs(
+      new Decimal(coordinatesObj[nearestSheetName][CONSTANTS.START_ROW][1]).minus(new Decimal(inputCoordinates.y)),
+    );
+    console.log('dX', dX);
+    console.log('dY', dY);
+
+    const cABC = dX.pow(2).plus(dY.pow(2)).sqrt();
+    console.log('cABC', cABC.toNumber());
+
+    const sheetRowCount = Object.keys(coordinatesObj[nearestSheetName]).reduce((accum, current) => {
+      if (+current > accum) return +current;
+    }, 0);
+    console.log('sheetRowCount', sheetRowCount);
+
+    const sD = cABC.dividedBy(new Decimal(coordinatesObj[nearestSheetName][sheetRowCount][3]));
+
+    console.log('sd', sD.toNumber());
+
+    // Если нужно получить результат в виде числа, можно использовать .toNumber()
+    // const dX = coordinatesObj[nearestSheetName][];
+    // console.log('dX', dX);
+
     // const percentOne = calcPercentOne(nearestSheetPoints, sD);
-    const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD);
-    console.log('percentOne', percentOne);
+    // console.log('А вот и точки', coordinatesObj[nearestSheetName]);
+    // const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD);
+    // console.log('percentOne', percentOne);
   };
 </script>
 

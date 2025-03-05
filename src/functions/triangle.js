@@ -71,6 +71,7 @@ const findVerticles = (coordinateObj) => {
     red: findRedVerticle(coordinatesArr),
   };
 
+  console.log('треугольник', verticles);
   return verticles;
 };
 

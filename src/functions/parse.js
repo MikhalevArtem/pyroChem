@@ -6,6 +6,7 @@ const CONSTANTS = {
   X_COLL: 'E',
   Y_COLL: 'F',
   SD_COL: 'J',
+  C_ABC: 'I',
   PERCENT_ONE_COL: 'A',
   PERCENT_TWO_COL: 'B',
   PERCENT_THREE_COL: 'C',
@@ -58,6 +59,7 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
         +getSheetCell(sheet, `${CONSTANTS.X_COLL}${i}`).w,
         +getSheetCell(sheet, `${CONSTANTS.Y_COLL}${i}`).w,
         +getSheetCell(sheet, `${CONSTANTS.SD_COL}${i}`).w,
+        +getSheetCell(sheet, `${CONSTANTS.C_ABC}${i}`).w,
       ];
       if (compositionOneName) {
         result[name][i].push({
@@ -80,4 +82,4 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
   }, {});
 };
 
-export { getWB, getSheetNames, getCoordinatesObj };
+export { getWB, getSheetNames, getCoordinatesObj, CONSTANTS };

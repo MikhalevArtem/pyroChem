@@ -33,7 +33,6 @@ const calcNearestPoints = (coordinatesObj, x, y) => {
       }
     });
   });
-
   return result;
 };
 
