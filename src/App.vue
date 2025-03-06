@@ -177,13 +177,13 @@
     const dY = Decimal.abs(
       new Decimal(coordinatesObj[nearestSheetName][CONSTANTS.START_ROW][1]).minus(new Decimal(inputCoordinates.y)),
     );
-    console.log('dX', dX);
-    console.log('dY', dY);
 
-    const cABC = dX.pow(2).plus(dY.pow(2)).sqrt();
+    const cABC = Decimal.hypot(dX, dY);
     console.log('cABC', cABC.toNumber());
 
-    const sheetRowCount = Object.keys(coordinatesObj[nearestSheetName]).reduce((accum, current) => {
+    const nearestSheetKeys = Object.keys(coordinatesObj[nearestSheetName]);
+
+    const sheetRowCount = nearestSheetKeys.reduce((accum, current) => {
       if (+current > accum) return +current;
     }, 0);
     console.log('sheetRowCount', sheetRowCount);
@@ -192,14 +192,8 @@
 
     console.log('sd', sD.toNumber());
 
-    // Если нужно получить результат в виде числа, можно использовать .toNumber()
-    // const dX = coordinatesObj[nearestSheetName][];
-    // console.log('dX', dX);
-
-    // const percentOne = calcPercentOne(nearestSheetPoints, sD);
-    // console.log('А вот и точки', coordinatesObj[nearestSheetName]);
-    // const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD);
-    // console.log('percentOne', percentOne);
+    const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD.toNumber());
+    console.log(percentOne);
   };
 </script>
 
