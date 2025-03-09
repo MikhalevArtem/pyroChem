@@ -56,10 +56,10 @@ const getCoordinatesObj = (wb, sheetNames = []) => {
     };
     for (let i = CONSTANTS.START_ROW; i <= sheetRowsCount; i++) {
       result[name][i] = [
-        +getSheetCell(sheet, `${CONSTANTS.X_COLL}${i}`).w,
-        +getSheetCell(sheet, `${CONSTANTS.Y_COLL}${i}`).w,
-        +getSheetCell(sheet, `${CONSTANTS.SD_COL}${i}`).w,
-        +getSheetCell(sheet, `${CONSTANTS.C_ABC}${i}`).w,
+        +getSheetCell(sheet, `${CONSTANTS.X_COLL}${i}`).v,
+        +getSheetCell(sheet, `${CONSTANTS.Y_COLL}${i}`).v,
+        +getSheetCell(sheet, `${CONSTANTS.SD_COL}${i}`).v,
+        +getSheetCell(sheet, `${CONSTANTS.C_ABC}${i}`).v,
       ];
       if (compositionOneName) {
         result[name][i].push({

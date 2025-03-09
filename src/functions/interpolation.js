@@ -187,7 +187,7 @@ function evaluateSpline(points, coefficients, x) {
 function findXForY(points, coefficients, y) {
   let low = new Decimal(points[0].x);
   let high = new Decimal(points[points.length - 1].x);
-  const tolerance = new Decimal(1e-6);
+  const tolerance = new Decimal(1e-10);
   let mid;
 
   // Используем метод бинарного поиска
@@ -202,7 +202,7 @@ function findXForY(points, coefficients, y) {
     }
   }
 
-  return low.plus(high).dividedBy(2).toNumber();
+  return low.plus(high).dividedBy(2);
 }
 
 const calcPercentOne = (points, sD) => {

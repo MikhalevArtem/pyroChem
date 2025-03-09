@@ -93,7 +93,13 @@
     calcNearestSheetPoints,
     calcPercentOne,
     CONSTANTS,
+    COMPONENTS,
+    COMPONENTS_NAMES,
+    COMPOUNDS,
+    COMPOUNDS_NAMES,
+    COMPOSITION,
   } from './functions';
+  import { ja } from 'vuetify/locale';
 
   const inputFile = ref(null);
   const inputCoordinates = reactive({ x: 0, y: 0 });
@@ -124,6 +130,70 @@
 
   const calcnearestSheetName = (nearestSheetPoints) => {
     return Object.keys(nearestSheetPoints)[0];
+  };
+
+  const calcPercentTwoThree = (points, percentOne, isThirdCompound) => {
+    const pointsArr = Object.entries(points).sort((a, b) => +a[0] - +b[0]);
+    console.log('pointsArr', pointsArr);
+
+    const percentTwoCoef = new Decimal(Object.values(pointsArr[0][1][5])[0]).dividedBy(new Decimal(100));
+    console.log('percentTwoCoef', percentTwoCoef.toNumber());
+
+    const percentThreeCoef = isThirdCompound
+      ? new Decimal(Object.values(pointsArr[0][1][6])[0]).dividedBy(new Decimal(100))
+      : null;
+    console.log('percentThreeCoef', percentThreeCoef?.toNumber() || percentThreeCoef);
+
+    const percentTwo = new Decimal(100).minus(percentOne).mul(percentTwoCoef);
+    const percentThree = percentThreeCoef ? new Decimal(100).minus(percentOne).mul(percentThreeCoef) : null;
+
+    return [percentTwo, percentThree];
+  };
+
+  const calcCompundsNames = (isThirdCompound, points) => {
+    const pointArr = Object.values(points);
+
+    const compOneName = Object.keys(pointArr[0][4])[0].trim();
+    const compTwoName = Object.keys(pointArr[0][5])[0].trim();
+    const compThreeName = isThirdCompound ? Object.keys(pointArr[0][6])[0].trim() : null;
+
+    let result = [compOneName, compTwoName];
+    if (compThreeName) {
+      result = [...result, compThreeName];
+    }
+
+    return result;
+  };
+
+  const calcVueItems = (nearestSheetName, compoundNames, percents = []) => {
+    const result = {
+      'Название состава': nearestSheetName,
+      'Координата X': inputCoordinates.x,
+      'Координата Y': inputCoordinates.y,
+    };
+
+    const components = {};
+
+    Object.keys(COMPONENTS).forEach((component) => {
+      components[component] = {
+        name: COMPONENTS_NAMES[component],
+        value: 0,
+      };
+    });
+
+    console.log('components', components);
+
+    compoundNames.forEach((compoundName, index) => {
+      Object.entries(COMPOSITION[COMPOUNDS_NAMES[compoundName]]).forEach(([key, value]) => {
+        console.log(components[key]);
+        components[key].value = new Decimal(components[key].value)
+          .plus(percents[index].mul(value).dividedBy(100))
+          .toNumber();
+      });
+    });
+
+    console.log('components', components);
+    return result;
   };
 
   const sumbitFormHandler = async () => {
@@ -192,8 +262,27 @@
 
     console.log('sd', sD.toNumber());
 
-    const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD.toNumber());
+    const percentOne = calcPercentOne(coordinatesObj[nearestSheetName], sD.toNumber()).round();
     console.log(percentOne);
+
+    const isThirdCompound = coordinatesObj[nearestSheetName][CONSTANTS.START_ROW].length === 7;
+    console.log('isThirdCompund', isThirdCompound);
+
+    const [percentTwo, percentThree] = calcPercentTwoThree(
+      coordinatesObj[nearestSheetName],
+      percentOne,
+      isThirdCompound,
+    );
+
+    console.log('percentOne', percentOne.toNumber());
+    console.log('percentTwo', percentTwo.toNumber());
+    console.log('percentThree', percentThree?.toNumber() || percentThree);
+
+    const compundsNames = calcCompundsNames(isThirdCompound, coordinatesObj[nearestSheetName]);
+    console.log('compoundsNames', compundsNames);
+
+    const vueTable = calcVueItems(nearestSheetName, compundsNames, [percentOne, percentTwo, percentThree]);
+    console.log('vueTable', vueTable);
   };
 </script>
 

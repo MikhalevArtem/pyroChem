@@ -1,0 +1,123 @@
+import Decimal from 'decimal.js';
+
+const COMPONENTS = {
+  'VA_15': 'VA_15',
+  'DBF': 'DBF',
+  'PAM_4': 'PAM_4',
+  'NANO3': 'NANO3',
+  'SR(NO3)2': 'SR(NO3)2',
+  'BA(NO3)2': 'BA(NO3)2',
+  'PHA': 'PHA',
+  'PHK': 'PHK',
+  'CUO': 'CUO',
+  'F_4': 'F_4',
+  'ST_CA': 'ST_CA',
+  'I_M': 'I_M',
+  'ID': 'ID',
+  'ZNO': 'ZNO',
+};
+
+const COMPONENTS_NAMES = {
+  [COMPONENTS.VA_15]: 'ВА-15',
+  [COMPONENTS.DBF]: 'ДБФ',
+  [COMPONENTS.PAM_4]: 'ПАМ-4',
+  [COMPONENTS.NANO3]: 'NaNO3',
+  [COMPONENTS['SR(NO3)2']]: 'Sr(NO3)2',
+  [COMPONENTS['BA(NO3)2']]: 'Ba(NO3)2',
+  [COMPONENTS.PHA]: 'ПХА',
+  [COMPONENTS.PHK]: 'ПХК',
+  [COMPONENTS.CUO]: 'CuO',
+  [COMPONENTS.F_4]: 'Ф-4',
+  [COMPONENTS.ST_CA]: 'StCa',
+  [COMPONENTS.I_M]: 'И.м.',
+  [COMPONENTS.ID]: 'Ид.',
+  [COMPONENTS.ZNO]: 'ZnO',
+};
+
+const COMPOUNDS = {
+  KC_2M: 'KC_2M',
+  JC_M: 'JC_M',
+  ZC_2M: 'ZC_2M',
+  GC_21_3: 'GC_21_3',
+};
+
+const COMPOUNDS_NAMES = {
+  [COMPOUNDS.KC_2M]: 'КЦ-2М',
+  [COMPOUNDS.JC_M]: 'ЖЦ-М',
+  [COMPOUNDS.ZC_2M]: 'ЗЦ-2М',
+  [COMPOUNDS.GC_21_3]: 'ГЦ-21-3',
+
+  'КЦ-2М': [COMPOUNDS.KC_2M],
+  'ЖЦ-М': [COMPOUNDS.JC_M],
+  'ЗЦ-2М': [COMPOUNDS.ZC_2M],
+  'ГЦ-21-3': [COMPOUNDS.GC_21_3],
+};
+
+const COMPOSITION = {
+  [COMPOUNDS.KC_2M]: {
+    [COMPONENTS.VA_15]: 13.95,
+    [COMPONENTS.DBF]: 5.73,
+    [COMPONENTS.PAM_4]: 18.93,
+    [COMPONENTS.NANO3]: 0,
+    [COMPONENTS['SR(NO3)2']]: 57.78,
+    [COMPONENTS['BA(NO3)2']]: 0,
+    [COMPONENTS.PHA]: 0,
+    [COMPONENTS.PHK]: 0,
+    [COMPONENTS.CUO]: 0,
+    [COMPONENTS.F_4]: 1.49,
+    [COMPONENTS.ST_CA]: 0.25,
+    [COMPONENTS.I_M]: 1,
+    [COMPONENTS.ID]: 0,
+    [COMPONENTS.ZNO]: 0.87,
+  },
+  [COMPOUNDS.JC_M]: {
+    [COMPONENTS.VA_15]: 13.57,
+    [COMPONENTS.DBF]: 6.78,
+    [COMPONENTS.PAM_4]: 14.53,
+    [COMPONENTS.NANO3]: 56.2,
+    [COMPONENTS['SR(NO3)2']]: 57.78,
+    [COMPONENTS['BA(NO3)2']]: 0,
+    [COMPONENTS.PHA]: 0,
+    [COMPONENTS.PHK]: 0,
+    [COMPONENTS.CUO]: 0,
+    [COMPONENTS.F_4]: 1.94,
+    [COMPONENTS.ST_CA]: 0.19,
+    [COMPONENTS.I_M]: 0.97,
+    [COMPONENTS.ID]: 2.91,
+    [COMPONENTS.ZNO]: 2.91,
+  },
+  [COMPOUNDS.ZC_2M]: {
+    [COMPONENTS.VA_15]: 13.59,
+    [COMPONENTS.DBF]: 6.8,
+    [COMPONENTS.PAM_4]: 17.96,
+    [COMPONENTS.NANO3]: 0,
+    [COMPONENTS['SR(NO3)2']]: 0,
+    [COMPONENTS['BA(NO3)2']]: 36.89,
+    [COMPONENTS.PHA]: 19.42,
+    [COMPONENTS.PHK]: 0,
+    [COMPONENTS.CUO]: 0,
+    [COMPONENTS.F_4]: 0.97,
+    [COMPONENTS.ST_CA]: 0.29,
+    [COMPONENTS.I_M]: 1.17,
+    [COMPONENTS.ID]: 2.91,
+    [COMPONENTS.ZNO]: 0,
+  },
+  [COMPOUNDS.GC_21_3]: {
+    [COMPONENTS.VA_15]: 12.0,
+    [COMPONENTS.DBF]: 6.0,
+    [COMPONENTS.PAM_4]: 14.0,
+    [COMPONENTS.NANO3]: 0,
+    [COMPONENTS['SR(NO3)2']]: 0,
+    [COMPONENTS['BA(NO3)2']]: 0,
+    [COMPONENTS.PHA]: 0,
+    [COMPONENTS.PHK]: 40,
+    [COMPONENTS.CUO]: 25,
+    [COMPONENTS.F_4]: 2,
+    [COMPONENTS.ST_CA]: 0.2,
+    [COMPONENTS.I_M]: 0.8,
+    [COMPONENTS.ID]: 0,
+    [COMPONENTS.ZNO]: 0,
+  },
+};
+
+export { COMPONENTS, COMPONENTS_NAMES, COMPOUNDS, COMPOUNDS_NAMES, COMPOSITION };
