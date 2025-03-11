@@ -51,6 +51,36 @@
                 >
               </v-col>
             </v-row>
+            <v-row justify="center">
+              <v-col cols="12">
+                <v-data-table
+                  v-if="firstTableItems"
+                  :items="[Object.fromEntries(firstTableItems)]"
+                  hide-default-footer
+                ></v-data-table>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="12">
+                <v-table v-if="secondTableItems">
+                  <thead>
+                    <tr>
+                      <th class="text-left">Компонент</th>
+                      <th class="text-left">Состав в процентах%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="item in secondTableItems"
+                      :key="item.name"
+                    >
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.value }}</td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </v-col>
+            </v-row>
           </v-container>
         </v-form>
       </v-container>
@@ -104,6 +134,9 @@
   const inputFile = ref(null);
   const inputCoordinates = reactive({ x: 0, y: 0 });
   const errors = reactive([]);
+
+  const firstTableItems = ref(null);
+  const secondTableItems = ref(null);
 
   const showSnack = computed({
     get() {
@@ -165,13 +198,39 @@
     return result;
   };
 
-  const calcVueItems = (nearestSheetName, compoundNames, percents = []) => {
-    const result = {
-      'Название состава': nearestSheetName,
-      'Координата X': inputCoordinates.x,
-      'Координата Y': inputCoordinates.y,
-    };
+  const calcFirstTableItems = (nearestSheetName, compoundNames, percents = []) => {
+    const result = new Map();
 
+    result.set('Название состава', nearestSheetName);
+    result.set('Координата X', inputCoordinates.x);
+    result.set('Координата Y', inputCoordinates.y);
+
+    compoundNames.forEach((item, index) => {
+      result.set(`${item}%`, percents[index].toNumber());
+    });
+
+    // const components = {};
+
+    // Object.keys(COMPONENTS).forEach((component) => {
+    //   components[component] = {
+    //     name: COMPONENTS_NAMES[component],
+    //     value: 0,
+    //   };
+    // });
+
+    // compoundNames.forEach((compoundName, index) => {
+    //   Object.entries(COMPOSITION[COMPOUNDS_NAMES[compoundName]]).forEach(([key, value]) => {
+    //     components[key].value = new Decimal(components[key].value)
+    //       .plus(percents[index].mul(value).dividedBy(100))
+    //       .toNumber();
+    //   });
+    // });
+
+    // console.log('components', components);
+    return result;
+  };
+
+  const calcSecondTabelItems = (compoundNames, percents = []) => {
     const components = {};
 
     Object.keys(COMPONENTS).forEach((component) => {
@@ -181,19 +240,16 @@
       };
     });
 
-    console.log('components', components);
-
     compoundNames.forEach((compoundName, index) => {
       Object.entries(COMPOSITION[COMPOUNDS_NAMES[compoundName]]).forEach(([key, value]) => {
-        console.log(components[key]);
         components[key].value = new Decimal(components[key].value)
           .plus(percents[index].mul(value).dividedBy(100))
           .toNumber();
       });
     });
 
-    console.log('components', components);
-    return result;
+    console.log('ahahahahah', components);
+    return Object.values(components).filter((item) => +item.value);
   };
 
   const sumbitFormHandler = async () => {
@@ -281,8 +337,13 @@
     const compundsNames = calcCompundsNames(isThirdCompound, coordinatesObj[nearestSheetName]);
     console.log('compoundsNames', compundsNames);
 
-    const vueTable = calcVueItems(nearestSheetName, compundsNames, [percentOne, percentTwo, percentThree]);
-    console.log('vueTable', vueTable);
+    firstTableItems.value = calcFirstTableItems(nearestSheetName, compundsNames, [
+      percentOne,
+      percentTwo,
+      percentThree,
+    ]);
+    console.log('firstTableItems', firstTableItems.value);
+    secondTableItems.value = calcSecondTabelItems(compundsNames, [percentOne, percentTwo, percentThree]);
   };
 </script>
 
