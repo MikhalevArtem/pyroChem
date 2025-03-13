@@ -53,15 +53,31 @@
             </v-row>
             <v-row justify="center">
               <v-col cols="12">
-                <v-data-table
+                <h4
+                  class="text-center"
                   v-if="firstTableItems"
-                  :items="[Object.fromEntries(firstTableItems)]"
-                  hide-default-footer
-                ></v-data-table>
+                >
+                  Расчёт произведёт по таблице {{ firstTableItems.get('Название состава') }}
+                </h4>
               </v-col>
             </v-row>
             <v-row justify="center">
-              <v-col cols="12">
+              <v-col
+                cols="6"
+                lg="6"
+              >
+                <v-btn
+                  v-show="secondTableItems"
+                  class="w-100"
+                  color="secondary"
+                  type="button"
+                  @click="() => createExcelFile(secondTableItems)"
+                  >Скачать результат</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="6">
                 <v-table v-if="secondTableItems">
                   <thead>
                     <tr>
@@ -128,8 +144,8 @@
     COMPOUNDS,
     COMPOUNDS_NAMES,
     COMPOSITION,
+    createExcelFile,
   } from './functions';
-  import { ja } from 'vuetify/locale';
 
   const inputFile = ref(null);
   const inputCoordinates = reactive({ x: 0, y: 0 });
@@ -242,9 +258,11 @@
 
     compoundNames.forEach((compoundName, index) => {
       Object.entries(COMPOSITION[COMPOUNDS_NAMES[compoundName]]).forEach(([key, value]) => {
-        components[key].value = new Decimal(components[key].value)
-          .plus(percents[index].mul(value).dividedBy(100))
-          .toNumber();
+        new Decimal(
+          (components[key].value = new Decimal(components[key].value)
+            .plus(percents[index].mul(value).dividedBy(100))
+            .toFixed(1, Decimal.ROUND_DOWN)),
+        ).toNumber();
       });
     });
 
@@ -344,7 +362,22 @@
     ]);
     console.log('firstTableItems', firstTableItems.value);
     secondTableItems.value = calcSecondTabelItems(compundsNames, [percentOne, percentTwo, percentThree]);
+    console.log('secondTableItems', secondTableItems.value);
   };
+
+  // const downloadFile = (tableName = 'Новый состав') => {
+  //   const blob = createExcelFile(secondTableItems.value, tableName);
+  //   const url = URL.createObjectURL(blob);
+
+  //   const link = document.createElement('a');
+  //   link.href = url;
+  //   link.download = tableName;
+  //   document.body.appendChild(link);
+  //   link.click();
+
+  //   document.body.removeChild(link);
+  //   URL.revokeObjectURL(url);
+  // };
 </script>
 
 <style scoped></style>
